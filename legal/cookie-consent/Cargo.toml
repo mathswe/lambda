@@ -3,6 +3,22 @@ name = "cookie-consent"
 version = "0.1.0"
 edition = "2021"
 
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+
 [dependencies]
+worker = "0.0.20"
+console_error_panic_hook = { version = "0.1.7", optional = true }
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.114"
+
+[profile.release]
+# Tell `rustc` to optimize for small code size.
+# Enable since the worker size is limited:
+# https://developers.cloudflare.com/workers/platform/limits/#script-size
+opt-level = "s"
