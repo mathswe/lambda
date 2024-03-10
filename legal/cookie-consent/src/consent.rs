@@ -38,8 +38,8 @@ mod tests {
     }
 
     #[test]
-    fn cookie_consent_serialization() {
-        let consent = CookieConsent {
+    fn synthetic_cookie_consent_serialization() {
+        let synthetic_consent = CookieConsent {
             id: String::from("abc"),
             created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
             pref: CookieConsentPref {
@@ -49,9 +49,13 @@ mod tests {
                 targeting: false,
             },
         };
-        let json = serde_json::to_string(&consent).unwrap();
+        let json = serde_json::to_string(&synthetic_consent).unwrap();
         let deserialized_consent = serde_json::from_str::<CookieConsent>(&json).unwrap();
 
-        assert_eq!(consent, deserialized_consent);
+        assert_eq!(
+            synthetic_consent,
+            deserialized_consent,
+            "synthetic consents are equal when serializing"
+        );
     }
 }
