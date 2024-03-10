@@ -20,6 +20,12 @@ pub struct CookieConsent {
     pref: CookieConsentPref,
 }
 
+#[derive(PartialEq, Debug, Serialize, Deserialize)]
+pub struct CookieConsentValue {
+    created_at: DateTime<Utc>,
+    pref: CookieConsentPref,
+}
+
 impl CookieConsent {
     pub fn new(pref: CookieConsentPref) -> Self {
         CookieConsent {
@@ -27,6 +33,16 @@ impl CookieConsent {
             created_at: Utc::now(),
             pref,
         }
+    }
+
+    pub fn to_kv(&self) -> (String, CookieConsentValue) {
+        (
+            self.id.to_string(),
+            CookieConsentValue {
+                created_at: self.created_at,
+                pref: self.pref,
+            }
+        )
     }
 
     pub fn to_json(&self) -> String {
@@ -99,6 +115,35 @@ mod tests {
             synthetic_consent.to_json(),
             json,
             "synthetic consent JSONs are equal when serializing"
+        );
+    }
+
+    #[test]
+    fn cookie_consent_kv() {
+        let consent = CookieConsent {
+            id: String::from("abc"),
+            created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
+            pref: CookieConsentPref {
+                essential: true,
+                functional: false,
+                analytics: true,
+                targeting: false,
+            },
+        };
+        let kv = consent.to_kv();
+
+        assert_eq!(
+            kv.0,
+            consent.id,
+            "key of KV pair equals consent id"
+        );
+        assert_eq!(
+            kv.1,
+            CookieConsentValue {
+                created_at: consent.created_at,
+                pref: consent.pref,
+            },
+            "value of KV pair equals consent value"
         );
     }
 }
