@@ -2,9 +2,10 @@
 // This file is part of https://github.com/mathswe/lambda
 
 use chrono::{DateTime, Utc};
+use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
 
-#[derive(PartialEq, Debug, Serialize, Deserialize)]
+#[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct CookieConsentPref {
     essential: bool,
     functional: bool,
@@ -17,6 +18,16 @@ pub struct CookieConsent {
     id: String,
     created_at: DateTime<Utc>,
     pref: CookieConsentPref,
+}
+
+impl CookieConsent {
+    pub fn new(pref: CookieConsentPref) -> Self {
+        CookieConsent {
+            id: nanoid!(),
+            created_at: Utc::now(),
+            pref,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -35,6 +46,24 @@ mod tests {
         let deserialized_pref = serde_json::from_str::<CookieConsentPref>(&json).unwrap();
 
         assert_eq!(pref, deserialized_pref);
+    }
+
+    #[test]
+    fn cookie_consent_serialization() {
+        let consent = CookieConsent::new(CookieConsentPref {
+            essential: true,
+            functional: false,
+            analytics: true,
+            targeting: false,
+        });
+        let json = serde_json::to_string(&consent).unwrap();
+        let deserialized_consent = serde_json::from_str::<CookieConsent>(&json).unwrap();
+
+        assert_eq!(
+            consent,
+            deserialized_consent,
+            "generated consents are equal when serializing"
+        );
     }
 
     #[test]
