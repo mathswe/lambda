@@ -1,14 +1,5 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+// Copyright (c) 2024 Tobias Briones. All rights reserved.
+// This file is part of https://github.com/mathswe/lambda
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+mod consent;
+mod cookie_consent;
