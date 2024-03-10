@@ -1,6 +1,7 @@
 // Copyright (c) 2024 Tobias Briones. All rights reserved.
 // This file is part of https://github.com/mathswe/lambda
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
@@ -14,6 +15,7 @@ pub struct CookieConsentPref {
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 pub struct CookieConsent {
     id: String,
+    created_at: DateTime<Utc>,
     pref: CookieConsentPref,
 }
 
@@ -39,6 +41,7 @@ mod tests {
     fn cookie_consent_serialization() {
         let consent = CookieConsent {
             id: String::from("abc"),
+            created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
             pref: CookieConsentPref {
                 essential: true,
                 functional: false,
