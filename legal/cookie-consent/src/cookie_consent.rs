@@ -12,14 +12,14 @@ pub async fn post_consent_pref(
     req
         .json::<CookieConsentPref>()
         .await
-        .map(|pref| register_consent(req, pref))
-        .map_err(|e|
-            Error::from(format!("Fail to read request JSON body: {}", e))
+        .map_or_else(
+            |e| Response::error(format!("Invalid JSON body: {}", e), 400),
+            |pref| register_consent(req, pref),
         )
 }
 
-fn register_consent(req: Request, pref: CookieConsentPref) -> Response {
+fn register_consent(req: Request, pref: CookieConsentPref) -> Result<Response, Error> {
     console_log!("Received request: {:?}", req);
 
-    Response::from_json(&pref).unwrap()
+    Ok(Response::from_json(&pref).unwrap())
 }
