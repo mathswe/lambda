@@ -28,6 +28,10 @@ impl CookieConsent {
             pref,
         }
     }
+
+    pub fn to_json(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
 }
 
 #[cfg(test)]
@@ -64,6 +68,11 @@ mod tests {
             deserialized_consent,
             "generated consents are equal when serializing"
         );
+        assert_eq!(
+            consent.to_json(),
+            json,
+            "generated consent JSONs are equal when serializing"
+        );
     }
 
     #[test]
@@ -85,6 +94,11 @@ mod tests {
             synthetic_consent,
             deserialized_consent,
             "synthetic consents are equal when serializing"
+        );
+        assert_eq!(
+            synthetic_consent.to_json(),
+            json,
+            "synthetic consent JSONs are equal when serializing"
         );
     }
 }
