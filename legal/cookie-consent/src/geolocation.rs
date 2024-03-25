@@ -21,6 +21,7 @@ pub struct Geolocation {
 }
 
 impl Geolocation {
+    #[allow(dead_code)]
     pub fn empty_with(time_zone: chrono_tz::Tz, colo: String) -> Self {
         Geolocation {
             time_zone,
