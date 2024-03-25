@@ -42,7 +42,7 @@ pub struct CookieConsent {
 }
 
 impl CookieConsent {
-    pub fn new(pref: CookieConsentPref, geolocation: Geolocation, domain: Domain) -> Self {
+    pub fn new(domain: Domain, pref: CookieConsentPref, geolocation: Geolocation) -> Self {
         CookieConsent {
             id: nanoid!(),
             value: CookieConsentValue {
@@ -83,12 +83,12 @@ mod tests {
 
     #[test]
     fn cookie_consent_serialization() {
-        let consent = CookieConsent::new(CookieConsentPref {
+        let consent = CookieConsent::new(Domain::MathSweCom, CookieConsentPref {
             essential: true,
             functional: false,
             analytics: true,
             targeting: false,
-        }, dummy_geolocation(), Domain::MathSweCom);
+        }, dummy_geolocation());
         let json = serde_json::to_string(&consent).unwrap();
         let deserialized_consent = serde_json::from_str::<CookieConsent>(&json).unwrap();
 
