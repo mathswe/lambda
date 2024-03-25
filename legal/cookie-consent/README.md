@@ -3,6 +3,11 @@
 It processes the MathSwe cookie consent operations such as storing consent
 records.
 
+## Getting Started
+
+Run `npx wrangler dev` for development. If you need more debugging information,
+you can run it like `npx wrangler dev --log-level debug`.
+
 ## Deployment
 
 The microservice is deployed to Cloudflare Workers and KV.
