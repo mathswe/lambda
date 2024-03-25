@@ -4,6 +4,7 @@
 use chrono::{DateTime, Utc};
 use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
+use crate::geolocation::Geolocation;
 
 #[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct CookieConsentPref {
@@ -18,6 +19,7 @@ pub struct CookieConsent {
     id: String,
     created_at: DateTime<Utc>,
     pref: CookieConsentPref,
+    geolocation: Geolocation,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
@@ -27,11 +29,12 @@ pub struct CookieConsentValue {
 }
 
 impl CookieConsent {
-    pub fn new(pref: CookieConsentPref) -> Self {
+    pub fn new(pref: CookieConsentPref, geolocation: Geolocation) -> Self {
         CookieConsent {
             id: nanoid!(),
             created_at: Utc::now(),
             pref,
+            geolocation,
         }
     }
 
@@ -75,7 +78,7 @@ mod tests {
             functional: false,
             analytics: true,
             targeting: false,
-        });
+        }, dummy_geolocation());
         let json = serde_json::to_string(&consent).unwrap();
         let deserialized_consent = serde_json::from_str::<CookieConsent>(&json).unwrap();
 
@@ -102,6 +105,7 @@ mod tests {
                 analytics: true,
                 targeting: false,
             },
+            geolocation: dummy_geolocation()
         };
         let json = serde_json::to_string(&synthetic_consent).unwrap();
         let deserialized_consent = serde_json::from_str::<CookieConsent>(&json).unwrap();
@@ -129,6 +133,7 @@ mod tests {
                 analytics: true,
                 targeting: false,
             },
+            geolocation: dummy_geolocation(),
         };
         let kv = consent.to_kv();
 
@@ -145,5 +150,9 @@ mod tests {
             },
             "value of KV pair equals consent value"
         );
+    }
+
+    fn dummy_geolocation() -> Geolocation {
+        Geolocation::empty_with(chrono_tz::Tz::America__Tegucigalpa, String::from(""))
     }
 }

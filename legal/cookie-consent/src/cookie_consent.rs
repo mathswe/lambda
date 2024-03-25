@@ -5,15 +5,17 @@ use std::fmt::Display;
 use worker::{console_log, Error, Request, Response, RouteContext};
 
 use crate::consent::{CookieConsent, CookieConsentPref};
+use crate::geolocation::Geolocation;
 
 pub async fn post_consent_pref(
     mut req: Request,
     ctx: RouteContext<()>,
 ) -> Result<Response, Error> {
     let json = req.json::<CookieConsentPref>().await;
+    let geolocation = Geolocation::from_req(req);
 
     match json {
-        Ok(pref) => register_consent(ctx, pref).await,
+        Ok(pref) => register_consent(ctx, pref, geolocation).await,
         Err(e) => Response::error(format!("Invalid JSON body: {}", e), 400),
     }
 }
@@ -21,9 +23,10 @@ pub async fn post_consent_pref(
 async fn register_consent(
     ctx: RouteContext<()>,
     pref: CookieConsentPref,
+    geolocation: Geolocation,
 ) -> Result<Response, Error> {
     let cookie_consent_kv = "COOKIE_CONSENT";
-    let consent = CookieConsent::new(pref);
+    let consent = CookieConsent::new(pref, geolocation);
     let (id, value) = consent.to_kv();
 
     ctx
