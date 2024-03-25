@@ -22,7 +22,7 @@ pub struct CookieConsentPref {
 }
 
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
-pub struct CookieConsentUserRequest {
+pub struct CookieConsentClientRequest {
     pub(crate) domain: Domain,
     pub(crate) pref: CookieConsentPref,
 }

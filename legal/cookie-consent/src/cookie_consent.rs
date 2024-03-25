@@ -5,14 +5,14 @@ use std::fmt::Display;
 
 use worker::{console_log, Error, Request, Response, RouteContext};
 
-use crate::consent::{CookieConsent, CookieConsentUserRequest};
+use crate::consent::{CookieConsent, CookieConsentClientRequest};
 use crate::geolocation::Geolocation;
 
 pub async fn post_consent_pref(
     mut req: Request,
     ctx: RouteContext<()>,
 ) -> Result<Response, Error> {
-    let json = req.json::<CookieConsentUserRequest>().await;
+    let json = req.json::<CookieConsentClientRequest>().await;
     let geolocation = Geolocation::from_req(req);
 
     match json {
@@ -23,7 +23,7 @@ pub async fn post_consent_pref(
 
 async fn register_consent(
     ctx: RouteContext<()>,
-    user_req: CookieConsentUserRequest,
+    user_req: CookieConsentClientRequest,
     geolocation: Geolocation,
 ) -> Result<Response, Error> {
     let cookie_consent_kv = "COOKIE_CONSENT";
