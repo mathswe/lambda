@@ -20,6 +20,21 @@ pub struct Geolocation {
 }
 
 impl Geolocation {
+    pub fn empty_with(time_zone: chrono_tz::Tz, colo: String) -> Self {
+        Geolocation {
+            time_zone,
+            colo,
+            country: None,
+            city: None,
+            continent: None,
+            coordinates: None,
+            postal_code: None,
+            metro_code: None,
+            region: None,
+            region_code: None,
+        }
+    }
+
     pub fn from_req(req: Request) -> Self {
         let cf = req.cf().unwrap();
 
