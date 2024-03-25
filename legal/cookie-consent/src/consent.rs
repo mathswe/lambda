@@ -27,18 +27,18 @@ pub struct CookieConsentUserRequest {
     pub(crate) pref: CookieConsentPref,
 }
 
-#[derive(PartialEq, Debug, Serialize, Deserialize)]
-pub struct CookieConsent {
-    id: String,
-    value: CookieConsentValue,
-}
-
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub struct CookieConsentValue {
     domain: Domain,
     created_at: DateTime<Utc>,
     pref: CookieConsentPref,
     geolocation: Geolocation,
+}
+
+#[derive(PartialEq, Debug, Serialize, Deserialize)]
+pub struct CookieConsent {
+    id: String,
+    value: CookieConsentValue,
 }
 
 impl CookieConsent {
