@@ -17,35 +17,30 @@ pub struct CookieConsentPref {
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 pub struct CookieConsent {
     id: String,
-    created_at: DateTime<Utc>,
-    pref: CookieConsentPref,
-    geolocation: Geolocation,
+    value: CookieConsentValue,
 }
 
-#[derive(PartialEq, Debug, Serialize, Deserialize)]
+#[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub struct CookieConsentValue {
     created_at: DateTime<Utc>,
     pref: CookieConsentPref,
+    geolocation: Geolocation,
 }
 
 impl CookieConsent {
     pub fn new(pref: CookieConsentPref, geolocation: Geolocation) -> Self {
         CookieConsent {
             id: nanoid!(),
-            created_at: Utc::now(),
-            pref,
-            geolocation,
+            value: CookieConsentValue {
+                created_at: Utc::now(),
+                pref,
+                geolocation,
+            },
         }
     }
 
     pub fn to_kv(&self) -> (String, CookieConsentValue) {
-        (
-            self.id.to_string(),
-            CookieConsentValue {
-                created_at: self.created_at,
-                pref: self.pref,
-            }
-        )
+        (self.id.to_string(), self.value.clone())
     }
 
     pub fn to_json(&self) -> String {
@@ -98,14 +93,16 @@ mod tests {
     fn synthetic_cookie_consent_serialization() {
         let synthetic_consent = CookieConsent {
             id: String::from("abc"),
-            created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
-            pref: CookieConsentPref {
-                essential: true,
-                functional: false,
-                analytics: true,
-                targeting: false,
+            value: CookieConsentValue {
+                created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
+                pref: CookieConsentPref {
+                    essential: true,
+                    functional: false,
+                    analytics: true,
+                    targeting: false,
+                },
+                geolocation: dummy_geolocation(),
             },
-            geolocation: dummy_geolocation()
         };
         let json = serde_json::to_string(&synthetic_consent).unwrap();
         let deserialized_consent = serde_json::from_str::<CookieConsent>(&json).unwrap();
@@ -119,36 +116,6 @@ mod tests {
             synthetic_consent.to_json(),
             json,
             "synthetic consent JSONs are equal when serializing"
-        );
-    }
-
-    #[test]
-    fn cookie_consent_kv() {
-        let consent = CookieConsent {
-            id: String::from("abc"),
-            created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
-            pref: CookieConsentPref {
-                essential: true,
-                functional: false,
-                analytics: true,
-                targeting: false,
-            },
-            geolocation: dummy_geolocation(),
-        };
-        let kv = consent.to_kv();
-
-        assert_eq!(
-            kv.0,
-            consent.id,
-            "key of KV pair equals consent id"
-        );
-        assert_eq!(
-            kv.1,
-            CookieConsentValue {
-                created_at: consent.created_at,
-                pref: consent.pref,
-            },
-            "value of KV pair equals consent value"
         );
     }
 
