@@ -5,7 +5,7 @@ use std::fmt::Display;
 
 use worker::{console_log, Error, Request, Response, RouteContext};
 
-use crate::consent::{CookieConsent, CookieConsentClientRequest};
+use crate::client_consent::CookieConsentClientRequest;
 use crate::geolocation::Geolocation;
 
 pub async fn post_consent_pref(
@@ -27,7 +27,7 @@ async fn register_consent(
     geolocation: Geolocation,
 ) -> Result<Response, Error> {
     let cookie_consent_kv = "COOKIE_CONSENT";
-    let consent = CookieConsent::from_client_req(user_req, geolocation);
+    let consent = user_req.to_cookie_consent(geolocation);
     let (id, value) = consent.to_kv();
 
     ctx
