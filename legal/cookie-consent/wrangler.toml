@@ -9,3 +9,8 @@ command = "cargo install worker-build && worker-build --release"
 binding = "COOKIE_CONSENT"
 id = "017bdbd1a7494c8a9ed3dc61f4960f57"
 preview_id = "629e7c4f21574fa3937757a47edbc353"
+
+[env.staging]
+[[env.staging.kv_namespaces]]
+binding = "COOKIE_CONSENT"
+id = "c6e99b6ec1544418926784301e06bce5"
