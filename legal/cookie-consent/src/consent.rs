@@ -30,8 +30,8 @@ pub struct CookieConsentClientRequest {
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub struct CookieConsentValue {
     domain: Domain,
-    created_at: DateTime<Utc>,
     pref: CookieConsentPref,
+    created_at: DateTime<Utc>,
     geolocation: Geolocation,
 }
 
@@ -47,8 +47,8 @@ impl CookieConsent {
             id: nanoid!(),
             value: CookieConsentValue {
                 domain,
-                created_at: Utc::now(),
                 pref,
+                created_at: Utc::now(),
                 geolocation,
             },
         }
@@ -110,13 +110,13 @@ mod tests {
             id: String::from("abc"),
             value: CookieConsentValue {
                 domain: Domain::MathSweCom,
-                created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
                 pref: CookieConsentPref {
                     essential: true,
                     functional: false,
                     analytics: true,
                     targeting: false,
                 },
+                created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
                 geolocation: dummy_geolocation(),
             },
         };
