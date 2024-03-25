@@ -1,6 +1,7 @@
 // Copyright (c) 2024 Tobias Briones. All rights reserved.
 // This file is part of https://github.com/mathswe/lambda
 
+use std::str::FromStr;
 use serde::{Deserialize, Serialize};
 use worker::Request;
 
@@ -39,7 +40,7 @@ impl Geolocation {
         let cf = req.cf().unwrap();
 
         Geolocation {
-            time_zone: cf.timezone(),
+            time_zone: chrono_tz::Tz::from_str(&cf.timezone_name()).unwrap(),
             colo: cf.colo(),
             country: cf.country(),
             city: cf.city(),
