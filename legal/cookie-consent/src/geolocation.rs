@@ -5,7 +5,7 @@ use std::str::FromStr;
 use serde::{Deserialize, Serialize};
 use worker::Request;
 
-#[derive(PartialEq, Debug, Serialize, Deserialize)]
+#[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub struct Geolocation {
     #[serde(with = "chrono_tz_serde")]
     time_zone: chrono_tz::Tz,
