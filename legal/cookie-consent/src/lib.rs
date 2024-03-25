@@ -7,6 +7,7 @@ use crate::cookie_consent::post_consent_pref;
 
 mod consent;
 mod cookie_consent;
+mod geolocation;
 
 #[event(fetch)]
 pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
