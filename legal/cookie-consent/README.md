@@ -14,3 +14,10 @@ environment.
 
 The service will be available
 at https://mathswe-cookie-consent-staging.tobiasbriones-dev.workers.dev.
+
+### Deploying to Production
+
+Run `npx wrangler deploy` to deploy the service to the production environment.
+
+The service will be deployed
+to https://mathswe-cookie-consent.tobiasbriones-dev.workers.dev.
