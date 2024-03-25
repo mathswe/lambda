@@ -2,31 +2,32 @@
 // This file is part of https://github.com/mathswe/lambda
 
 use std::fmt::Display;
+
 use worker::{console_log, Error, Request, Response, RouteContext};
 
-use crate::consent::{CookieConsent, CookieConsentPref};
+use crate::consent::{CookieConsent, CookieConsentUserRequest};
 use crate::geolocation::Geolocation;
 
 pub async fn post_consent_pref(
     mut req: Request,
     ctx: RouteContext<()>,
 ) -> Result<Response, Error> {
-    let json = req.json::<CookieConsentPref>().await;
+    let json = req.json::<CookieConsentUserRequest>().await;
     let geolocation = Geolocation::from_req(req);
 
     match json {
-        Ok(pref) => register_consent(ctx, pref, geolocation).await,
+        Ok(req) => register_consent(ctx, req, geolocation).await,
         Err(e) => Response::error(format!("Invalid JSON body: {}", e), 400),
     }
 }
 
 async fn register_consent(
     ctx: RouteContext<()>,
-    pref: CookieConsentPref,
+    user_req: CookieConsentUserRequest,
     geolocation: Geolocation,
 ) -> Result<Response, Error> {
     let cookie_consent_kv = "COOKIE_CONSENT";
-    let consent = CookieConsent::new(pref, geolocation);
+    let consent = CookieConsent::new(user_req.pref, geolocation, user_req.domain);
     let (id, value) = consent.to_kv();
 
     ctx

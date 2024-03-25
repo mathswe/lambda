@@ -6,12 +6,25 @@ use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
 use crate::geolocation::Geolocation;
 
+#[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
+pub enum Domain {
+    MathSweCom,
+    MathSoftware,
+    MathSoftwareEngineer,
+}
+
 #[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct CookieConsentPref {
     essential: bool,
     functional: bool,
     analytics: bool,
     targeting: bool,
+}
+
+#[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
+pub struct CookieConsentUserRequest {
+    pub(crate) domain: Domain,
+    pub(crate) pref: CookieConsentPref,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
@@ -22,16 +35,18 @@ pub struct CookieConsent {
 
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub struct CookieConsentValue {
+    domain: Domain,
     created_at: DateTime<Utc>,
     pref: CookieConsentPref,
     geolocation: Geolocation,
 }
 
 impl CookieConsent {
-    pub fn new(pref: CookieConsentPref, geolocation: Geolocation) -> Self {
+    pub fn new(pref: CookieConsentPref, geolocation: Geolocation, domain: Domain) -> Self {
         CookieConsent {
             id: nanoid!(),
             value: CookieConsentValue {
+                domain,
                 created_at: Utc::now(),
                 pref,
                 geolocation,
@@ -73,7 +88,7 @@ mod tests {
             functional: false,
             analytics: true,
             targeting: false,
-        }, dummy_geolocation());
+        }, dummy_geolocation(), Domain::MathSweCom);
         let json = serde_json::to_string(&consent).unwrap();
         let deserialized_consent = serde_json::from_str::<CookieConsent>(&json).unwrap();
 
@@ -94,6 +109,7 @@ mod tests {
         let synthetic_consent = CookieConsent {
             id: String::from("abc"),
             value: CookieConsentValue {
+                domain: Domain::MathSweCom,
                 created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
                 pref: CookieConsentPref {
                     essential: true,
