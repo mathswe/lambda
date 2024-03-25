@@ -2,6 +2,7 @@
 // This file is part of https://github.com/mathswe/lambda
 
 use serde::{Deserialize, Serialize};
+use worker::Request;
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 pub struct Geolocation {
@@ -16,6 +17,25 @@ pub struct Geolocation {
     metro_code: Option<String>,
     region: Option<String>,
     region_code: Option<String>,
+}
+
+impl Geolocation {
+    pub fn from_req(req: Request) -> Self {
+        let cf = req.cf().unwrap();
+
+        Geolocation {
+            time_zone: cf.timezone(),
+            colo: cf.colo(),
+            country: cf.country(),
+            city: cf.city(),
+            continent: cf.continent(),
+            coordinates: cf.coordinates(),
+            postal_code: cf.postal_code(),
+            metro_code: cf.metro_code(),
+            region: cf.region(),
+            region_code: cf.region_code(),
+        }
+    }
 }
 
 mod chrono_tz_serde {
