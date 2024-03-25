@@ -27,7 +27,7 @@ async fn register_consent(
     geolocation: Geolocation,
 ) -> Result<Response, Error> {
     let cookie_consent_kv = "COOKIE_CONSENT";
-    let consent = CookieConsent::new(user_req.domain, user_req.pref, geolocation);
+    let consent = CookieConsent::from_client_req(user_req, geolocation);
     let (id, value) = consent.to_kv();
 
     ctx

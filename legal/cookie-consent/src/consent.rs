@@ -23,8 +23,8 @@ pub struct CookieConsentPref {
 
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub struct CookieConsentClientRequest {
-    pub(crate) domain: Domain,
-    pub(crate) pref: CookieConsentPref,
+    domain: Domain,
+    pref: CookieConsentPref,
 }
 
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
@@ -52,6 +52,13 @@ impl CookieConsent {
                 geolocation,
             },
         }
+    }
+
+    pub fn from_client_req(
+        CookieConsentClientRequest { domain, pref }: CookieConsentClientRequest,
+        geolocation: Geolocation,
+    ) -> Self {
+        Self::new(domain, pref, geolocation)
     }
 
     pub fn to_kv(&self) -> (String, CookieConsentValue) {
