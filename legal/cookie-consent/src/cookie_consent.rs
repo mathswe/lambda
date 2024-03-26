@@ -13,7 +13,7 @@ pub async fn post_consent(
     ctx: RouteContext<()>,
 ) -> Result<Response, Error> {
     let json = req.json::<CookieConsentClientRequest>().await;
-    let geolocation = Geolocation::from_req(req);
+    let geolocation = Geolocation::from_req(&req);
 
     match json {
         Ok(client_req) => register_consent(ctx, client_req, geolocation).await,

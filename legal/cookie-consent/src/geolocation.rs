@@ -37,7 +37,7 @@ impl Geolocation {
         }
     }
 
-    pub fn from_req(req: Request) -> Self {
+    pub fn from_req(req: &Request) -> Self {
         let cf = req.cf().unwrap();
 
         Geolocation {
