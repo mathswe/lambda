@@ -4,6 +4,7 @@
 use chrono::{DateTime, Utc};
 use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
+use crate::anonymous_ip::AnonymousIpv4;
 use crate::geolocation::Geolocation;
 
 #[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
@@ -27,6 +28,7 @@ pub struct CookieConsentValue {
     pref: CookieConsentPref,
     created_at: DateTime<Utc>,
     geolocation: Geolocation,
+    anonymous_ip: Option<AnonymousIpv4>,
     user_agent: String,
 }
 
@@ -41,6 +43,7 @@ impl CookieConsent {
         domain: Domain,
         pref: CookieConsentPref,
         geolocation: Geolocation,
+        anonymous_ip: Option<AnonymousIpv4>,
         user_agent: String,
     ) -> Self {
         CookieConsent {
@@ -50,6 +53,7 @@ impl CookieConsent {
                 pref,
                 created_at: Utc::now(),
                 geolocation,
+                anonymous_ip,
                 user_agent,
             },
         }
@@ -66,6 +70,7 @@ impl CookieConsent {
 
 #[cfg(test)]
 mod tests {
+    use std::net::Ipv4Addr;
     use super::*;
 
     #[test]
@@ -89,7 +94,7 @@ mod tests {
             functional: false,
             analytics: true,
             targeting: false,
-        }, dummy_geolocation(), dummy_user_agent());
+        }, dummy_geolocation(), dummy_ip(), dummy_user_agent());
         let json = serde_json::to_string(&consent).unwrap();
         let deserialized_consent = serde_json::from_str::<CookieConsent>(&json).unwrap();
 
@@ -119,6 +124,7 @@ mod tests {
                 },
                 created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
                 geolocation: dummy_geolocation(),
+                anonymous_ip: dummy_ip(),
                 user_agent: dummy_user_agent(),
             },
         };
@@ -135,6 +141,10 @@ mod tests {
             json,
             "synthetic consent JSONs are equal when serializing"
         );
+    }
+
+    fn dummy_ip() -> Option<AnonymousIpv4> {
+        Some(AnonymousIpv4::from_ipv4(Ipv4Addr::new(1, 1, 1, 1)))
     }
 
     fn dummy_geolocation() -> Geolocation {

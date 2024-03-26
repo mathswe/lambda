@@ -2,8 +2,11 @@
 // This file is part of https://github.com/mathswe/lambda
 
 use std::fmt::Display;
+use std::net::Ipv4Addr;
+use std::str::FromStr;
 
 use worker::{console_log, Error, Request, Response, RouteContext};
+use crate::anonymous_ip::AnonymousIpv4;
 
 use crate::client_consent::CookieConsentClientRequest;
 use crate::geolocation::Geolocation;
@@ -14,6 +17,14 @@ pub async fn post_consent(
 ) -> Result<Response, Error> {
     let json = req.json::<CookieConsentClientRequest>().await;
     let geolocation = Geolocation::from_req(&req);
+    let ip = req
+        .headers()
+        .get("cf-connecting-ip")
+        .unwrap_or(None)
+        .map(|raw_ip| Ipv4Addr::from_str(&raw_ip))
+        .and_then(Result::ok)
+        .map(AnonymousIpv4::from_ipv4);
+
     let user_agent = req
         .headers()
         .get("user-agent")
@@ -25,6 +36,7 @@ pub async fn post_consent(
             ctx,
             client_req,
             geolocation,
+            ip,
             user_agent,
         ).await,
         Err(e) => Response::error(format!("Invalid JSON body: {}", e), 400),
@@ -35,10 +47,11 @@ async fn register_consent(
     ctx: RouteContext<()>,
     user_req: CookieConsentClientRequest,
     geolocation: Geolocation,
+    anonymous_ip: Option<AnonymousIpv4>,
     user_agent: String,
 ) -> Result<Response, Error> {
     let cookie_consent_kv = "COOKIE_CONSENT";
-    let consent = user_req.to_cookie_consent(geolocation, user_agent);
+    let consent = user_req.to_cookie_consent(geolocation, anonymous_ip, user_agent);
     let (id, value) = consent.to_kv();
 
     ctx
