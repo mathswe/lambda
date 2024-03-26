@@ -3,7 +3,7 @@
 
 use worker::*;
 
-use crate::cookie_consent::post_consent_pref;
+use crate::cookie_consent::post_consent;
 
 mod consent;
 mod cookie_consent;
@@ -15,7 +15,7 @@ pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
     let router = Router::new();
 
     router
-        .post_async("/", post_consent_pref)
+        .post_async("/", post_consent)
         .run(req, env)
         .await
 }

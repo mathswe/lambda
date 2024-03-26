@@ -8,7 +8,7 @@ use worker::{console_log, Error, Request, Response, RouteContext};
 use crate::client_consent::CookieConsentClientRequest;
 use crate::geolocation::Geolocation;
 
-pub async fn post_consent_pref(
+pub async fn post_consent(
     mut req: Request,
     ctx: RouteContext<()>,
 ) -> Result<Response, Error> {
