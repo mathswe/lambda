@@ -9,10 +9,7 @@ pub struct AnonymousIpv4(String);
 
 impl AnonymousIpv4 {
     pub fn from_ipv4(ipv4addr: Ipv4Addr) -> AnonymousIpv4 {
-        let octets = ipv4addr.octets();
-        let octet1 = octets[0];
-        let octet2 = octets[1];
-        let octet3 = octets[2];
+        let [octet1, octet2, octet3, _] = ipv4addr.octets();
         let anonymous_ip = format!("{}.{}.{}.0", octet1, octet2, octet3);
 
         AnonymousIpv4(anonymous_ip)
