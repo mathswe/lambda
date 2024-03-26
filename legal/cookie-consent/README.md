@@ -56,3 +56,16 @@ The consent types are defined in [consent.rs](src/consent.rs), where:
     - Id.
     - `CookieConsentValue`.
 
+### Register Consent
+
+Provides a `POST` endpoint to request a new cookie consent. It is called right
+after the user gave consent from the cookie banner or preference to store the
+record correctly.
+
+| Path | Method | Body                         | Response        |
+|------|--------|------------------------------|-----------------|
+| `/`  | `POST` | `CookieConsentClientRequest` | `CookieConsent` |
+
+It returns the consent created, so the client can confirm the operation and
+store it in cookies to let the user know their current consent information, such
+as consent ID and preferences.
