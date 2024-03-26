@@ -9,6 +9,7 @@ mod consent;
 mod cookie_consent;
 mod geolocation;
 mod client_consent;
+mod anonymous_ip;
 
 #[event(fetch)]
 pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
