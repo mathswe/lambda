@@ -26,3 +26,9 @@ Run `npx wrangler deploy` to deploy the service to the production environment.
 
 The service will be deployed
 to https://mathswe-cookie-consent.tobiasbriones-dev.workers.dev.
+
+## Cookie Consent
+
+The cookie consent service processes the MathSwe requests when a user sets their
+consent via the cookie banner or preference. Incoming requests are allowed from
+domains like mathswe.com, math.software, and mathsoftware.engineer.
