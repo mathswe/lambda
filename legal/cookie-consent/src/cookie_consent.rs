@@ -16,7 +16,7 @@ pub async fn post_consent(
     let geolocation = Geolocation::from_req(req);
 
     match json {
-        Ok(req) => register_consent(ctx, req, geolocation).await,
+        Ok(client_req) => register_consent(ctx, client_req, geolocation).await,
         Err(e) => Response::error(format!("Invalid JSON body: {}", e), 400),
     }
 }
