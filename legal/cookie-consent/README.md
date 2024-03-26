@@ -91,3 +91,12 @@ It requires the `Domain` and `CookieConsentPref` fields. For example:
 
 The `CookieConsentClientRequest` defines the body the client sends for
 registering a consent.
+
+## About
+
+**Cookie Consent | MathSwe Lambda**
+
+It processes the MathSwe cookie consent operations such as storing consent
+records.
+
+Copyright © 2024 Tobias Briones. All rights reserved.
