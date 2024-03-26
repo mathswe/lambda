@@ -69,3 +69,25 @@ record correctly.
 It returns the consent created, so the client can confirm the operation and
 store it in cookies to let the user know their current consent information, such
 as consent ID and preferences.
+
+#### Consent Client Request
+
+It defines the type of body in [client_consent.rs](src/client_consent.rs) the
+client needs to sent for processing a requesting consent.
+
+It requires the `Domain` and `CookieConsentPref` fields. For example:
+
+```json
+{
+    "domain": "MathSweCom",
+    "pref": {
+        "essential": true,
+        "functional": true,
+        "analytics": true,
+        "targeting": true
+    }
+}
+```
+
+The `CookieConsentClientRequest` defines the body the client sends for
+registering a consent.
