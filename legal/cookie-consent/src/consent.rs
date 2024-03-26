@@ -27,6 +27,7 @@ pub struct CookieConsentValue {
     pref: CookieConsentPref,
     created_at: DateTime<Utc>,
     geolocation: Geolocation,
+    user_agent: String,
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
@@ -36,7 +37,12 @@ pub struct CookieConsent {
 }
 
 impl CookieConsent {
-    pub fn new(domain: Domain, pref: CookieConsentPref, geolocation: Geolocation) -> Self {
+    pub fn new(
+        domain: Domain,
+        pref: CookieConsentPref,
+        geolocation: Geolocation,
+        user_agent: String,
+    ) -> Self {
         CookieConsent {
             id: nanoid!(),
             value: CookieConsentValue {
@@ -44,6 +50,7 @@ impl CookieConsent {
                 pref,
                 created_at: Utc::now(),
                 geolocation,
+                user_agent,
             },
         }
     }
@@ -82,7 +89,7 @@ mod tests {
             functional: false,
             analytics: true,
             targeting: false,
-        }, dummy_geolocation());
+        }, dummy_geolocation(), dummy_user_agent());
         let json = serde_json::to_string(&consent).unwrap();
         let deserialized_consent = serde_json::from_str::<CookieConsent>(&json).unwrap();
 
@@ -112,6 +119,7 @@ mod tests {
                 },
                 created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
                 geolocation: dummy_geolocation(),
+                user_agent: dummy_user_agent(),
             },
         };
         let json = serde_json::to_string(&synthetic_consent).unwrap();
@@ -131,5 +139,10 @@ mod tests {
 
     fn dummy_geolocation() -> Geolocation {
         Geolocation::empty_with(chrono_tz::Tz::America__Tegucigalpa, String::from(""))
+    }
+
+    fn dummy_user_agent() -> String {
+        "User Agent Is: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0"
+            .to_string()
     }
 }

@@ -15,7 +15,8 @@ impl CookieConsentClientRequest {
     pub fn to_cookie_consent(
         self,
         geolocation: Geolocation,
+        user_agent: String,
     ) -> CookieConsent {
-        CookieConsent::new(self.domain, self.pref, geolocation)
+        CookieConsent::new(self.domain, self.pref, geolocation, user_agent)
     }
 }

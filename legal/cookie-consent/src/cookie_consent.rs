@@ -14,9 +14,19 @@ pub async fn post_consent(
 ) -> Result<Response, Error> {
     let json = req.json::<CookieConsentClientRequest>().await;
     let geolocation = Geolocation::from_req(&req);
+    let user_agent = req
+        .headers()
+        .get("user-agent")
+        .unwrap_or(None)
+        .unwrap_or("".to_string());
 
     match json {
-        Ok(client_req) => register_consent(ctx, client_req, geolocation).await,
+        Ok(client_req) => register_consent(
+            ctx,
+            client_req,
+            geolocation,
+            user_agent,
+        ).await,
         Err(e) => Response::error(format!("Invalid JSON body: {}", e), 400),
     }
 }
@@ -25,9 +35,10 @@ async fn register_consent(
     ctx: RouteContext<()>,
     user_req: CookieConsentClientRequest,
     geolocation: Geolocation,
+    user_agent: String,
 ) -> Result<Response, Error> {
     let cookie_consent_kv = "COOKIE_CONSENT";
-    let consent = user_req.to_cookie_consent(geolocation);
+    let consent = user_req.to_cookie_consent(geolocation, user_agent);
     let (id, value) = consent.to_kv();
 
     ctx
