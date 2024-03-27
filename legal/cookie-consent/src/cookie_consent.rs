@@ -19,8 +19,12 @@ pub async fn post_consent(
     let origin = Origin::from_req(&req)?;
 
     if origin.is_none() {
-        return Response::empty()
-            .map(|res| res.with_status(403));
+        let is_local_mode = is_local_dev_mode(&ctx)?;
+
+        if !is_local_mode {
+            return Response::empty()
+                .map(|res| res.with_status(403));
+        }
     }
 
     let json = req.json::<CookieConsentClientRequest>().await;
@@ -71,6 +75,12 @@ async fn register_consent(
             |e| internal_error("Fail to store cookie consent", e),
             |_| Response::ok(consent.to_json()),
         )
+}
+
+fn is_local_dev_mode(ctx: &RouteContext<()>) -> Result<bool, Error> {
+    let mode = ctx.env.var("MODE")?.to_string();
+
+    Ok(mode == "local")
 }
 
 fn internal_error(msg: impl Into<String>, error: impl Display) -> Result<Response, Error> {
