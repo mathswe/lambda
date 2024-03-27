@@ -4,7 +4,7 @@
 use chrono::{DateTime, Utc};
 use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
-use Domain::{MathSweCom};
+use Domain::{MathSoftware, MathSoftwareEngineer, MathSweCom};
 use crate::anonymous_ip::AnonymousIpv4;
 use crate::geolocation::Geolocation;
 
@@ -13,6 +13,16 @@ pub enum Domain {
     MathSweCom,
     MathSoftware,
     MathSoftwareEngineer,
+}
+
+impl Domain {
+    pub fn to_domain_name(&self) -> String {
+        match self {
+            MathSweCom => "mathswe.com".to_string(),
+            MathSoftware => "math.software".to_string(),
+            MathSoftwareEngineer => "mathsoftware.engineer".to_string(),
+        }
+    }
 }
 
 #[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
