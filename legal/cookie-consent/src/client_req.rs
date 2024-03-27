@@ -64,6 +64,16 @@ impl Origin {
                 .flatten()
         )
     }
+
+    pub fn to_string(self) -> String {
+        let domain_name = self.domain.to_domain_name();
+        let hostname = match self.subdomain {
+            Some(subdomain) => format!("{}.{}", subdomain, domain_name),
+            None => domain_name,
+        };
+
+        format!("https://{}", hostname)
+    }
 }
 
 
@@ -158,6 +168,28 @@ mod tests {
             .for_each(|origin| assert_eq!(
                 None,
                 Origin::from_str(origin)
+            ))
+    }
+
+    #[test]
+    fn converts_origin_to_str() {
+        let origin_cases = vec![
+            "https://mathswe.com",
+            "https://staging.mathswe.com",
+            "https://nested.subdomain.mathswe.com",
+            "https://math.software",
+            "https://staging.math.software",
+            "https://nested.subdomain.math.software",
+            "https://mathsoftware.engineer",
+            "https://staging.mathsoftware.engineer",
+            "https://nested.subdomain.mathsoftware.engineer",
+        ];
+
+        origin_cases
+            .iter()
+            .for_each(|expected| assert_eq!(
+                *expected,
+                Origin::from_str(expected).unwrap().to_string()
             ))
     }
 }
