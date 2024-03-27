@@ -4,6 +4,7 @@
 use chrono::{DateTime, Utc};
 use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
+use Domain::{MathSweCom};
 use crate::anonymous_ip::AnonymousIpv4;
 use crate::geolocation::Geolocation;
 
@@ -89,7 +90,7 @@ mod tests {
 
     #[test]
     fn cookie_consent_serialization() {
-        let consent = CookieConsent::new(Domain::MathSweCom, CookieConsentPref {
+        let consent = CookieConsent::new(MathSweCom, CookieConsentPref {
             essential: true,
             functional: false,
             analytics: true,
@@ -115,7 +116,7 @@ mod tests {
         let synthetic_consent = CookieConsent {
             id: String::from("abc"),
             value: CookieConsentValue {
-                domain: Domain::MathSweCom,
+                domain: MathSweCom,
                 pref: CookieConsentPref {
                     essential: true,
                     functional: false,
