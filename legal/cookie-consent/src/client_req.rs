@@ -2,6 +2,8 @@
 // This file is part of https://github.com/mathswe/lambda
 
 use strum::IntoEnumIterator;
+use worker::{Error, Request};
+
 use crate::consent::Domain;
 
 /// Defines an accepted client origin, where the scheme is `HTTPS`, the hostname is one of
@@ -51,12 +53,24 @@ impl Origin {
             .map(|hostname| get_origin(&hostname))
             .flatten()
     }
+
+    pub fn from_req(req: &Request) -> Result<Option<Self>, Error> {
+        Ok(
+            req
+                .headers()
+                .get("Origin")?
+                .as_deref()
+                .map(Self::from_str)
+                .flatten()
+        )
+    }
 }
 
 
 #[cfg(test)]
 mod tests {
     use Domain::MathSweCom;
+
     use crate::client_req::Origin;
     use crate::consent::Domain;
     use crate::consent::Domain::{MathSoftware, MathSoftwareEngineer};
