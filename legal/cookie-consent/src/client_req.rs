@@ -65,6 +65,10 @@ impl Origin {
         )
     }
 
+    pub fn domain(self) -> Domain {
+        self.domain
+    }
+
     pub fn to_string(self) -> String {
         let domain_name = self.domain.to_domain_name();
         let hostname = match self.subdomain {
