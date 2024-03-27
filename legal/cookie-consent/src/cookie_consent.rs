@@ -5,7 +5,7 @@ use std::fmt::Display;
 use std::net::Ipv4Addr;
 use std::str::FromStr;
 
-use worker::{console_log, Error, Request, Response, RouteContext};
+use worker::{console_log, Cors, Error, Method, Request, Response, RouteContext};
 
 use crate::anonymous_ip::AnonymousIpv4;
 use crate::client_consent::CookieConsentClientRequest;
@@ -50,7 +50,9 @@ pub async fn post_consent(
             geolocation,
             ip,
             user_agent,
-        ).await,
+        )
+            .await
+            .and_then(|res| handle_cors(res, origin)),
         Err(e) => Response::error(format!("Invalid JSON body: {}", e), 400),
     }
 }
@@ -75,6 +77,21 @@ async fn register_consent(
             |e| internal_error("Fail to store cookie consent", e),
             |_| Response::ok(consent.to_json()),
         )
+}
+
+fn cors(res: Response, origin: Origin) -> Result<Response, Error> {
+    res
+        .with_cors(&Cors::new()
+            .with_origins(vec![origin.to_string()])
+            .with_methods(vec![Method::Post])
+            .with_max_age(86400)
+        )
+}
+
+fn handle_cors(mut res: Response, origin_option: Option<Origin>) -> Result<Response, Error> {
+    origin_option
+        .map(|origin| cors(res.cloned()?, origin))
+        .unwrap_or(Ok(res))
 }
 
 fn is_local_dev_mode(ctx: &RouteContext<()>) -> Result<bool, Error> {
