@@ -10,6 +10,7 @@ mod cookie_consent;
 mod geolocation;
 mod anonymous_ip;
 mod client_req;
+mod server;
 
 #[event(fetch)]
 pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
