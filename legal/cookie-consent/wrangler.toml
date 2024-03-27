@@ -17,7 +17,7 @@ preview_id = "629e7c4f21574fa3937757a47edbc353"
 [env.local.vars]
 MODE = "local"
 
-[[env.staging.kv_namespaces]]
+[[env.local.kv_namespaces]]
 binding = "COOKIE_CONSENT"
 id = "c6e99b6ec1544418926784301e06bce5"
 
