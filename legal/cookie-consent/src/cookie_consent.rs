@@ -6,15 +6,23 @@ use std::net::Ipv4Addr;
 use std::str::FromStr;
 
 use worker::{console_log, Error, Request, Response, RouteContext};
-use crate::anonymous_ip::AnonymousIpv4;
 
+use crate::anonymous_ip::AnonymousIpv4;
 use crate::client_consent::CookieConsentClientRequest;
+use crate::client_req::Origin;
 use crate::geolocation::Geolocation;
 
 pub async fn post_consent(
     mut req: Request,
     ctx: RouteContext<()>,
 ) -> Result<Response, Error> {
+    let origin = Origin::from_req(&req)?;
+
+    if origin.is_none() {
+        return Response::empty()
+            .map(|res| res.with_status(403));
+    }
+
     let json = req.json::<CookieConsentClientRequest>().await;
     let geolocation = Geolocation::from_req(&req);
     let ip = req
