@@ -5,13 +5,14 @@ use std::fmt::Display;
 use std::net::Ipv4Addr;
 use std::str::FromStr;
 
-use worker::{console_log, Cors, Error, Method, Request, Response, RouteContext};
+use worker::{Error, Request, Response, RouteContext};
 
 use crate::anonymous_ip::AnonymousIpv4;
 use crate::client_req::Origin;
 use crate::consent::{CookieConsent, CookieConsentPref, Domain};
 use crate::consent::Domain::MathSweCom;
 use crate::geolocation::Geolocation;
+use crate::server::{handle_cors, internal_error, is_local_dev_mode};
 
 pub async fn post_consent(
     mut req: Request,
@@ -90,28 +91,3 @@ async fn register_consent(
         )
 }
 
-fn cors(res: Response, origin: Origin) -> Result<Response, Error> {
-    res
-        .with_cors(&Cors::new()
-            .with_origins(vec![origin.to_string()])
-            .with_methods(vec![Method::Post])
-            .with_max_age(86400)
-        )
-}
-
-fn handle_cors(mut res: Response, origin_option: Option<Origin>) -> Result<Response, Error> {
-    origin_option
-        .map(|origin| cors(res.cloned()?, origin))
-        .unwrap_or(Ok(res))
-}
-
-fn is_local_dev_mode(ctx: &RouteContext<()>) -> Result<bool, Error> {
-    let mode = ctx.env.var("MODE")?.to_string();
-
-    Ok(mode == "local")
-}
-
-fn internal_error(msg: impl Into<String>, error: impl Display) -> Result<Response, Error> {
-    console_log!("{}", format!("{}", error));
-    Response::error(msg, 500)
-}
