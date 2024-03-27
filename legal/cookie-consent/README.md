@@ -5,8 +5,8 @@ records.
 
 ## Getting Started
 
-Run `npx wrangler dev` for development. If you need more debugging information,
-you can run it like `npx wrangler dev --log-level debug`.
+Run `npx wrangler dev -e=local` for development. If you need more debugging
+information, you can run it like `npx wrangler dev -e=local --log-level debug`.
 
 ## Deployment
 
