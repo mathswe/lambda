@@ -90,6 +90,16 @@ The `CookieConsentPref` defines the body the client sends for registering a
 consent. The rest of the values required for registering the consent are taken
 form the HTTP request in the server.
 
+### Allowed Domains
+
+Only valid MathSwe `Origin`s are allowed for performing requests.
+
+Valid origins are https://mathswe.com, https://math.software, and
+https://mathsoftware.engineer, including all their subdomains.
+
+Requests from unauthorized origins are forbidden, so the response will be
+`403`. The only exception is when the app runs in development with `local` mode.
+
 ## About
 
 **Cookie Consent | MathSwe Lambda**
