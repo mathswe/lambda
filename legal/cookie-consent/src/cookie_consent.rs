@@ -54,11 +54,9 @@ pub async fn post_consent(
             geolocation,
             ip,
             user_agent,
-        )
-            .await
-            .and_then(|res| handle_cors(res, origin)),
+        ).await,
         Err(e) => Response::error(format!("Invalid JSON body: {}", e), 400),
-    }
+    }.and_then(|res| handle_cors(res, origin))
 }
 
 async fn register_consent(
