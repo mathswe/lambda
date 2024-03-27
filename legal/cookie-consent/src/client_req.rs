@@ -10,7 +10,7 @@ use crate::consent::Domain;
 /// `Domain` variants, and has no explicit ports. Further, it allows all subdomains of a given
 /// `Domain`.
 /// For example, `https://mathswe.com` and `https://staging.mathswe.com` are accepted `Origin`s.
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Clone, Debug)]
 pub struct Origin {
     domain: Domain,
     subdomain: Option<String>,
