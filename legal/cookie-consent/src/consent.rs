@@ -4,11 +4,15 @@
 use chrono::{DateTime, Utc};
 use nanoid::nanoid;
 use serde::{Deserialize, Serialize};
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
+
 use Domain::{MathSoftware, MathSoftwareEngineer, MathSweCom};
+
 use crate::anonymous_ip::AnonymousIpv4;
 use crate::geolocation::Geolocation;
 
-#[derive(PartialEq, Clone, Debug, Serialize, Deserialize)]
+#[derive(PartialEq, Clone, EnumIter, Debug, Serialize, Deserialize)]
 pub enum Domain {
     MathSweCom,
     MathSoftware,
