@@ -8,8 +8,9 @@ use std::str::FromStr;
 use worker::{console_log, Cors, Error, Method, Request, Response, RouteContext};
 
 use crate::anonymous_ip::AnonymousIpv4;
-use crate::client_consent::CookieConsentClientRequest;
 use crate::client_req::Origin;
+use crate::consent::{CookieConsent, CookieConsentPref, Domain};
+use crate::consent::Domain::MathSweCom;
 use crate::geolocation::Geolocation;
 
 pub async fn post_consent(
@@ -27,7 +28,9 @@ pub async fn post_consent(
         }
     }
 
-    let json = req.json::<CookieConsentClientRequest>().await;
+    // If origin is None (i.e., local development) set MathSweCom by default
+    let domain = origin.clone().map(Origin::domain).unwrap_or(MathSweCom);
+    let json = req.json::<CookieConsentPref>().await;
     let geolocation = Geolocation::from_req(&req);
     let ip = req
         .headers()
@@ -44,9 +47,10 @@ pub async fn post_consent(
         .unwrap_or("".to_string());
 
     match json {
-        Ok(client_req) => register_consent(
+        Ok(pref) => register_consent(
             ctx,
-            client_req,
+            domain,
+            pref,
             geolocation,
             ip,
             user_agent,
@@ -59,13 +63,20 @@ pub async fn post_consent(
 
 async fn register_consent(
     ctx: RouteContext<()>,
-    user_req: CookieConsentClientRequest,
+    domain: Domain,
+    pref: CookieConsentPref,
     geolocation: Geolocation,
     anonymous_ip: Option<AnonymousIpv4>,
     user_agent: String,
 ) -> Result<Response, Error> {
     let cookie_consent_kv = "COOKIE_CONSENT";
-    let consent = user_req.to_cookie_consent(geolocation, anonymous_ip, user_agent);
+    let consent = CookieConsent::new(
+        domain,
+        pref,
+        geolocation,
+        anonymous_ip,
+        user_agent,
+    );
     let (id, value) = consent.to_kv();
 
     ctx

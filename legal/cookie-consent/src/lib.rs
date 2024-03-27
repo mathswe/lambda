@@ -8,7 +8,6 @@ use crate::cookie_consent::post_consent;
 mod consent;
 mod cookie_consent;
 mod geolocation;
-mod client_consent;
 mod anonymous_ip;
 mod client_req;
 

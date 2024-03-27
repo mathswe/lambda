@@ -62,35 +62,33 @@ Provides a `POST` endpoint to request a new cookie consent. It is called right
 after the user gave consent from the cookie banner or preference to store the
 record correctly.
 
-| Path | Method | Body                         | Response        |
-|------|--------|------------------------------|-----------------|
-| `/`  | `POST` | `CookieConsentClientRequest` | `CookieConsent` |
+| Path | Method | Body                | Response        |
+|------|--------|---------------------|-----------------|
+| `/`  | `POST` | `CookieConsentPref` | `CookieConsent` |
 
 It returns the consent created, so the client can confirm the operation and
 store it in cookies to let the user know their current consent information, such
 as consent ID and preferences.
 
-#### Consent Client Request
+#### Cookie Consent Preference
 
-It defines the type of body in [client_consent.rs](src/client_consent.rs) the
-client needs to sent for processing a requesting consent.
+It defines the type of body in the client needs to send for processing a
+requesting consent.
 
-It requires the `Domain` and `CookieConsentPref` fields. For example:
+For example:
 
 ```json
 {
-    "domain": "MathSweCom",
-    "pref": {
-        "essential": true,
-        "functional": true,
-        "analytics": true,
-        "targeting": true
-    }
+    "essential": true,
+    "functional": true,
+    "analytics": true,
+    "targeting": true
 }
 ```
 
-The `CookieConsentClientRequest` defines the body the client sends for
-registering a consent.
+The `CookieConsentPref` defines the body the client sends for registering a
+consent. The rest of the values required for registering the consent are taken
+form the HTTP request in the server.
 
 ## About
 
