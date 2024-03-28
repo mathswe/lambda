@@ -52,15 +52,15 @@ impl OriginProxy {
     }
 }
 
-pub fn is_local_dev_mode(ctx: &RouteContext<()>) -> Result<bool, Error> {
-    let mode = ctx.env.var("MODE")?.to_string();
-
-    Ok(mode == "local")
-}
-
 pub fn internal_error(msg: impl Into<String>, error: impl Display) -> Result<Response, Error> {
     console_log!("{}", format!("{}", error));
     Response::error(msg, 500)
+}
+
+fn is_local_dev_mode(ctx: &RouteContext<()>) -> Result<bool, Error> {
+    let mode = ctx.env.var("MODE")?.to_string();
+
+    Ok(mode == "local")
 }
 
 fn cors(res: Response, origin: Origin) -> Result<Response, Error> {
