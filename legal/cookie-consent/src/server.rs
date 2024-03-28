@@ -52,6 +52,11 @@ impl OriginProxy {
     }
 }
 
+pub fn forbidden() -> Result<Response, Error> {
+    Response::empty()
+        .map(|res| res.with_status(403))
+}
+
 pub fn internal_error(msg: impl Into<String>, error: impl Display) -> Result<Response, Error> {
     console_log!("{}", format!("{}", error));
     Response::error(msg, 500)

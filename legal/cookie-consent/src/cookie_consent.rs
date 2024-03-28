@@ -9,7 +9,7 @@ use worker::{Error, Request, Response, RouteContext};
 use crate::anonymous_ip::AnonymousIpv4;
 use crate::consent::{CookieConsent, CookieConsentPref, Domain};
 use crate::geolocation::Geolocation;
-use crate::server::{internal_error, OriginProxy};
+use crate::server::{forbidden, internal_error, OriginProxy};
 
 pub async fn post_consent(
     mut req: Request,
@@ -18,8 +18,7 @@ pub async fn post_consent(
     let origin_option = OriginProxy::from_req(&req, &ctx)?;
 
     if origin_option.is_none() {
-        return Response::empty()
-            .map(|res| res.with_status(403));
+        return forbidden()
     }
 
     let origin = origin_option.unwrap();
