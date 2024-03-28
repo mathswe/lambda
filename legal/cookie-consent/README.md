@@ -10,7 +10,8 @@ information, you can run it like `npx wrangler dev -e=local --log-level debug`.
 
 ## Deployment
 
-The microservice is deployed to Cloudflare Workers and KV.
+The microservice is deployed to Cloudflare Workers and requires KV (Key Value)
+storage.
 
 ### Deploying to Staging
 
