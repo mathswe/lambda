@@ -103,7 +103,7 @@ Requests from unauthorized origins are forbidden, so the response will be
 
 ## About
 
-**Cookie Consent | MathSwe Lambda**
+**Cookie Consent | MathSwe Legal**
 
 It processes the MathSwe cookie consent operations such as storing consent
 records.
