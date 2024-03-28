@@ -2,6 +2,11 @@
 
 Provides the MathSwe Legal web microservices.
 
+## Contact
+
+Tobias Briones: [GitHub](https://github.com/tobiasbriones)
+[LinkedIn](https://linkedin.com/in/tobiasbriones)
+
 ## About
 
 **MathSwe Legal**
