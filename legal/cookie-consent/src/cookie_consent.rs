@@ -18,7 +18,7 @@ pub async fn post_consent(
     let origin_option = OriginProxy::from_req(&req, &ctx)?;
 
     if origin_option.is_none() {
-        return forbidden()
+        return forbidden();
     }
 
     let origin = origin_option.unwrap();
@@ -80,4 +80,3 @@ async fn register_consent(
             |_| Response::ok(consent.to_json()),
         )
 }
-
