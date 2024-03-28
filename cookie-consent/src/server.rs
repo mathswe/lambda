@@ -1,5 +1,5 @@
 // Copyright (c) 2024 Tobias Briones. All rights reserved.
-// This file is part of https://github.com/mathswe/lambda
+// This file is part of https://github.com/mathswe/legal
 
 use std::fmt::Display;
 use worker::{console_log, Cors, Error, Method, Request, Response, RouteContext};
