@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2024 Tobias Briones. All rights reserved. -->
+<!-- This file is part of https://github.com/mathswe/legal -->
+
 # Legal
 
 [![GitHub Repository](https://img.shields.io/static/v1?label=GITHUB&message=REPOSITORY&labelColor=555&color=0277bd&style=for-the-badge&logo=GITHUB)](https://github.com/mathswe/legal)
