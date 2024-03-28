@@ -7,29 +7,23 @@ use std::str::FromStr;
 use worker::{Error, Request, Response, RouteContext};
 
 use crate::anonymous_ip::AnonymousIpv4;
-use crate::client_req::Origin;
 use crate::consent::{CookieConsent, CookieConsentPref, Domain};
-use crate::consent::Domain::MathSweCom;
 use crate::geolocation::Geolocation;
-use crate::server::{handle_cors, internal_error, is_local_dev_mode};
+use crate::server::{internal_error, OriginProxy};
 
 pub async fn post_consent(
     mut req: Request,
     ctx: RouteContext<()>,
 ) -> Result<Response, Error> {
-    let origin = Origin::from_req(&req)?;
+    let origin_option = OriginProxy::from_req(&req, &ctx)?;
 
-    if origin.is_none() {
-        let is_local_mode = is_local_dev_mode(&ctx)?;
-
-        if !is_local_mode {
-            return Response::empty()
-                .map(|res| res.with_status(403));
-        }
+    if origin_option.is_none() {
+        return Response::empty()
+            .map(|res| res.with_status(403));
     }
 
-    // If origin is None (i.e., local development) set MathSweCom by default
-    let domain = origin.clone().map(Origin::domain).unwrap_or(MathSweCom);
+    let origin = origin_option.unwrap();
+    let domain = origin.clone().domain();
     let json = req.json::<CookieConsentPref>().await;
     let geolocation = Geolocation::from_req(&req);
     let ip = req
@@ -56,7 +50,7 @@ pub async fn post_consent(
             user_agent,
         ).await,
         Err(e) => Response::error(format!("Invalid JSON body: {}", e), 400),
-    }.and_then(|res| handle_cors(res, origin))
+    }.and_then(|res| origin.handle_cors(res))
 }
 
 async fn register_consent(
