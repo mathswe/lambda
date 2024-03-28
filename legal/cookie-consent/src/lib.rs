@@ -1,14 +1,23 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+// Copyright (c) 2024 Tobias Briones. All rights reserved.
+// This file is part of https://github.com/mathswe/lambda
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+use worker::*;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+use crate::cookie_consent::post_consent;
+
+mod consent;
+mod cookie_consent;
+mod geolocation;
+mod anonymous_ip;
+mod client_req;
+mod server;
+
+#[event(fetch)]
+pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
+    let router = Router::new();
+
+    router
+        .post_async("/", post_consent)
+        .run(req, env)
+        .await
 }
