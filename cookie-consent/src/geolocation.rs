@@ -11,7 +11,6 @@ pub struct Geolocation {
     time_zone: chrono_tz::Tz,
     country: Option<String>,
     city: Option<String>,
-    metro_code: Option<String>,
     region: Option<String>,
     region_code: Option<String>,
 }
@@ -23,7 +22,6 @@ impl Geolocation {
             time_zone,
             country: None,
             city: None,
-            metro_code: None,
             region: None,
             region_code: None,
         }
@@ -36,7 +34,6 @@ impl Geolocation {
             time_zone: chrono_tz::Tz::from_str(&cf.timezone_name()).unwrap(),
             country: cf.country(),
             city: cf.city(),
-            metro_code: cf.metro_code(),
             region: cf.region(),
             region_code: cf.region_code(),
         }
