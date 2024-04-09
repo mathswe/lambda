@@ -99,6 +99,10 @@ impl ClientCookieConsent {
             geolocation: value.geolocation.clone(),
         }
     }
+
+    pub fn to_json(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
 }
 
 #[cfg(test)]
@@ -204,6 +208,20 @@ mod tests {
             },
             response,
             "client consent response matches the underlying server consent"
+        );
+
+        let json = serde_json::to_string(&response).unwrap();
+        let deserialized_consent = serde_json::from_str::<ClientCookieConsent>(&json).unwrap();
+
+        assert_eq!(
+            response,
+            deserialized_consent,
+            "client consents are equal when serializing"
+        );
+        assert_eq!(
+            response.to_json(),
+            json,
+            "client consent JSONs are equal when serializing"
         );
     }
 
