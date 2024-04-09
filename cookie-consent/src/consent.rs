@@ -162,7 +162,7 @@ mod tests {
     }
 
     fn dummy_geolocation() -> Geolocation {
-        Geolocation::empty_with(chrono_tz::Tz::America__Tegucigalpa, String::from(""))
+        Geolocation::empty_with(chrono_tz::Tz::America__Tegucigalpa)
     }
 
     fn dummy_user_agent() -> String {

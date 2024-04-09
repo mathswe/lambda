@@ -9,7 +9,6 @@ use worker::Request;
 pub struct Geolocation {
     #[serde(with = "chrono_tz_serde")]
     time_zone: chrono_tz::Tz,
-    colo: String,
     country: Option<String>,
     city: Option<String>,
     continent: Option<String>,
@@ -22,10 +21,9 @@ pub struct Geolocation {
 
 impl Geolocation {
     #[allow(dead_code)]
-    pub fn empty_with(time_zone: chrono_tz::Tz, colo: String) -> Self {
+    pub fn empty_with(time_zone: chrono_tz::Tz) -> Self {
         Geolocation {
             time_zone,
-            colo,
             country: None,
             city: None,
             continent: None,
@@ -42,7 +40,6 @@ impl Geolocation {
 
         Geolocation {
             time_zone: chrono_tz::Tz::from_str(&cf.timezone_name()).unwrap(),
-            colo: cf.colo(),
             country: cf.country(),
             city: cf.city(),
             continent: cf.continent(),
