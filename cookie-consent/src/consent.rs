@@ -82,6 +82,25 @@ impl CookieConsent {
     }
 }
 
+#[derive(PartialEq, Debug, Serialize, Deserialize)]
+pub struct ClientCookieConsent {
+    id: String,
+    pref: CookieConsentPref,
+    created_at: DateTime<Utc>,
+    geolocation: Geolocation,
+}
+
+impl ClientCookieConsent {
+    pub fn from(CookieConsent { id, value }: CookieConsent) -> Self {
+        ClientCookieConsent {
+            id,
+            pref: value.pref,
+            created_at: value.created_at,
+            geolocation: value.geolocation,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::net::Ipv4Addr;
@@ -154,6 +173,37 @@ mod tests {
             synthetic_consent.to_json(),
             json,
             "synthetic consent JSONs are equal when serializing"
+        );
+    }
+
+    #[test]
+    fn synthetic_cookie_consent_response() {
+        let id = String::from("xyz123");
+        let value = CookieConsentValue {
+            domain: MathSoftwareEngineer,
+            pref: CookieConsentPref {
+                essential: true,
+                functional: false,
+                analytical: true,
+                targeting: true,
+            },
+            created_at: "2024-04-09 17:49:01.613437 UTC".parse().unwrap(),
+            geolocation: dummy_geolocation(),
+            anonymous_ip: dummy_ip(),
+            user_agent: dummy_user_agent(),
+        };
+        let synthetic_consent = CookieConsent { id: id.clone(), value: value.clone() };
+        let response = ClientCookieConsent::from(synthetic_consent);
+
+        assert_eq!(
+            ClientCookieConsent {
+                id,
+                pref: value.pref,
+                created_at: value.created_at,
+                geolocation: value.geolocation,
+            },
+            response,
+            "client consent response matches the underlying server consent"
         );
     }
 
