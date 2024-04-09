@@ -91,12 +91,12 @@ pub struct ClientCookieConsent {
 }
 
 impl ClientCookieConsent {
-    pub fn from(CookieConsent { id, value }: CookieConsent) -> Self {
+    pub fn from(CookieConsent { id, value }: &CookieConsent) -> Self {
         ClientCookieConsent {
-            id,
+            id: id.clone(),
             pref: value.pref,
             created_at: value.created_at,
-            geolocation: value.geolocation,
+            geolocation: value.geolocation.clone(),
         }
     }
 }
@@ -193,7 +193,7 @@ mod tests {
             user_agent: dummy_user_agent(),
         };
         let synthetic_consent = CookieConsent { id: id.clone(), value: value.clone() };
-        let response = ClientCookieConsent::from(synthetic_consent);
+        let response = ClientCookieConsent::from(&synthetic_consent);
 
         assert_eq!(
             ClientCookieConsent {
