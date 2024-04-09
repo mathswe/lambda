@@ -32,7 +32,7 @@ impl Domain {
 pub struct CookieConsentPref {
     essential: bool,
     functional: bool,
-    analytics: bool,
+    analytical: bool,
     targeting: bool,
 }
 
@@ -92,7 +92,7 @@ mod tests {
         let pref = CookieConsentPref {
             essential: true,
             functional: false,
-            analytics: true,
+            analytical: true,
             targeting: false,
         };
         let json = serde_json::to_string(&pref).unwrap();
@@ -106,7 +106,7 @@ mod tests {
         let consent = CookieConsent::new(MathSweCom, CookieConsentPref {
             essential: true,
             functional: false,
-            analytics: true,
+            analytical: true,
             targeting: false,
         }, dummy_geolocation(), dummy_ip(), dummy_user_agent());
         let json = serde_json::to_string(&consent).unwrap();
@@ -133,7 +133,7 @@ mod tests {
                 pref: CookieConsentPref {
                     essential: true,
                     functional: false,
-                    analytics: true,
+                    analytical: true,
                     targeting: false,
                 },
                 created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
