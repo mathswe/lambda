@@ -7,7 +7,7 @@ use std::str::FromStr;
 use worker::{Error, Request, Response, RouteContext};
 
 use crate::anonymous_ip::AnonymousIpv4;
-use crate::consent::{CookieConsent, CookieConsentPref, Domain};
+    use crate::consent::{ClientCookieConsent, CookieConsent, CookieConsentPref, Domain};
 use crate::geolocation::Geolocation;
 use crate::server::{forbidden, internal_error, OriginProxy};
 
@@ -68,6 +68,7 @@ async fn register_consent(
         anonymous_ip,
         user_agent,
     );
+    let client_consent = ClientCookieConsent::from(&consent);
     let (id, value) = consent.to_kv();
 
     ctx
@@ -77,6 +78,6 @@ async fn register_consent(
         .await
         .map_or_else(
             |e| internal_error("Fail to store cookie consent", e),
-            |_| Response::ok(consent.to_json()),
+            |_| Response::ok(client_consent.to_json()),
         )
 }

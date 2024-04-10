@@ -9,29 +9,19 @@ use worker::Request;
 pub struct Geolocation {
     #[serde(with = "chrono_tz_serde")]
     time_zone: chrono_tz::Tz,
-    colo: String,
     country: Option<String>,
     city: Option<String>,
-    continent: Option<String>,
-    coordinates: Option<(f32, f32)>,
-    postal_code: Option<String>,
-    metro_code: Option<String>,
     region: Option<String>,
     region_code: Option<String>,
 }
 
 impl Geolocation {
     #[allow(dead_code)]
-    pub fn empty_with(time_zone: chrono_tz::Tz, colo: String) -> Self {
+    pub fn empty_with(time_zone: chrono_tz::Tz) -> Self {
         Geolocation {
             time_zone,
-            colo,
             country: None,
             city: None,
-            continent: None,
-            coordinates: None,
-            postal_code: None,
-            metro_code: None,
             region: None,
             region_code: None,
         }
@@ -42,13 +32,8 @@ impl Geolocation {
 
         Geolocation {
             time_zone: chrono_tz::Tz::from_str(&cf.timezone_name()).unwrap(),
-            colo: cf.colo(),
             country: cf.country(),
             city: cf.city(),
-            continent: cf.continent(),
-            coordinates: cf.coordinates(),
-            postal_code: cf.postal_code(),
-            metro_code: cf.metro_code(),
             region: cf.region(),
             region_code: cf.region_code(),
         }

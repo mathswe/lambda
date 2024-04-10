@@ -32,7 +32,7 @@ impl Domain {
 pub struct CookieConsentPref {
     essential: bool,
     functional: bool,
-    analytics: bool,
+    analytical: bool,
     targeting: bool,
 }
 
@@ -82,6 +82,29 @@ impl CookieConsent {
     }
 }
 
+#[derive(PartialEq, Debug, Serialize, Deserialize)]
+pub struct ClientCookieConsent {
+    id: String,
+    pref: CookieConsentPref,
+    created_at: DateTime<Utc>,
+    geolocation: Geolocation,
+}
+
+impl ClientCookieConsent {
+    pub fn from(CookieConsent { id, value }: &CookieConsent) -> Self {
+        ClientCookieConsent {
+            id: id.clone(),
+            pref: value.pref,
+            created_at: value.created_at,
+            geolocation: value.geolocation.clone(),
+        }
+    }
+
+    pub fn to_json(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::net::Ipv4Addr;
@@ -92,7 +115,7 @@ mod tests {
         let pref = CookieConsentPref {
             essential: true,
             functional: false,
-            analytics: true,
+            analytical: true,
             targeting: false,
         };
         let json = serde_json::to_string(&pref).unwrap();
@@ -106,7 +129,7 @@ mod tests {
         let consent = CookieConsent::new(MathSweCom, CookieConsentPref {
             essential: true,
             functional: false,
-            analytics: true,
+            analytical: true,
             targeting: false,
         }, dummy_geolocation(), dummy_ip(), dummy_user_agent());
         let json = serde_json::to_string(&consent).unwrap();
@@ -133,7 +156,7 @@ mod tests {
                 pref: CookieConsentPref {
                     essential: true,
                     functional: false,
-                    analytics: true,
+                    analytical: true,
                     targeting: false,
                 },
                 created_at: "2024-03-10 17:49:01.613437 UTC".parse().unwrap(),
@@ -157,12 +180,57 @@ mod tests {
         );
     }
 
+    #[test]
+    fn synthetic_cookie_consent_response() {
+        let id = String::from("xyz123");
+        let value = CookieConsentValue {
+            domain: MathSoftwareEngineer,
+            pref: CookieConsentPref {
+                essential: true,
+                functional: false,
+                analytical: true,
+                targeting: true,
+            },
+            created_at: "2024-04-09 17:49:01.613437 UTC".parse().unwrap(),
+            geolocation: dummy_geolocation(),
+            anonymous_ip: dummy_ip(),
+            user_agent: dummy_user_agent(),
+        };
+        let synthetic_consent = CookieConsent { id: id.clone(), value: value.clone() };
+        let response = ClientCookieConsent::from(&synthetic_consent);
+
+        assert_eq!(
+            ClientCookieConsent {
+                id,
+                pref: value.pref,
+                created_at: value.created_at,
+                geolocation: value.geolocation,
+            },
+            response,
+            "client consent response matches the underlying server consent"
+        );
+
+        let json = serde_json::to_string(&response).unwrap();
+        let deserialized_consent = serde_json::from_str::<ClientCookieConsent>(&json).unwrap();
+
+        assert_eq!(
+            response,
+            deserialized_consent,
+            "client consents are equal when serializing"
+        );
+        assert_eq!(
+            response.to_json(),
+            json,
+            "client consent JSONs are equal when serializing"
+        );
+    }
+
     fn dummy_ip() -> Option<AnonymousIpv4> {
         Some(AnonymousIpv4::from_ipv4(Ipv4Addr::new(1, 1, 1, 1)))
     }
 
     fn dummy_geolocation() -> Geolocation {
-        Geolocation::empty_with(chrono_tz::Tz::America__Tegucigalpa, String::from(""))
+        Geolocation::empty_with(chrono_tz::Tz::America__Tegucigalpa)
     }
 
     fn dummy_user_agent() -> String {

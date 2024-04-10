@@ -45,7 +45,7 @@ The consent types are defined in [consent.rs](src/consent.rs), where:
   requests. For example, the `MathSweCom` or `MathSoftware` sites can request
   consents from their cookie banner.
 - `CookieConsentPref`: Defines the consent for each of the cookie categories,
-  such as `essential`, `functional`, `analytics`, and `targeting`.
+  such as `essential`, `functional`, `analytical`, and `targeting`.
 - `CookieConsentValue`: Defines the value or payload that a registered consent
   has. It includes the relevant information like:
     - `Domain`.
@@ -66,9 +66,13 @@ Provides a `POST` endpoint to request a new cookie consent. It is called right
 after the user gave consent from the cookie banner or preference to store the
 record correctly.
 
-| Path | Method | Body                | Response        |
-|------|--------|---------------------|-----------------|
-| `/`  | `POST` | `CookieConsentPref` | `CookieConsent` |
+| Path | Method | Body                | Response              |
+|------|--------|---------------------|-----------------------|
+| `/`  | `POST` | `CookieConsentPref` | `ClientCookieConsent` |
+
+The server stores the `CookieConsent` it's applying and responds with the
+`ClientCookieConsent` with the corresponding information to update the client
+app.
 
 It returns the consent created, so the client can confirm the operation and
 store it in cookies to let the user know their current consent information, such
@@ -85,7 +89,7 @@ For example:
 {
     "essential": true,
     "functional": true,
-    "analytics": true,
+    "analytical": true,
     "targeting": true
 }
 ```
