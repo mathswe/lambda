@@ -63,9 +63,13 @@ Provides a `POST` endpoint to request a new cookie consent. It is called right
 after the user gave consent from the cookie banner or preference to store the
 record correctly.
 
-| Path | Method | Body                | Response        |
-|------|--------|---------------------|-----------------|
-| `/`  | `POST` | `CookieConsentPref` | `CookieConsent` |
+| Path | Method | Body                | Response              |
+|------|--------|---------------------|-----------------------|
+| `/`  | `POST` | `CookieConsentPref` | `ClientCookieConsent` |
+
+The server stores the `CookieConsent` it's applying and responds with the
+`ClientCookieConsent` with the corresponding information to update the client
+app.
 
 It returns the consent created, so the client can confirm the operation and
 store it in cookies to let the user know their current consent information, such
